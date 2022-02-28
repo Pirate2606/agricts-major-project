@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section style="background: -webkit-linear-gradient(left, #38be98, #A7C4BC)">
+    <div class="container pt-5">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="grid invoice">
+                    <div class="grid-body">
+                        <div class="invoice-title">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <img width="80px" src="{{ url_for('static', filename='images/logo.png') }}"
+                                        alt="" />
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h2>
+                                        Invoice<br />
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <address>
+                                    <strong>Billed To:</strong><br />
+                                    {{ user_name }}<br />
+                                </address>
+                            </div>
+                            <div class="col-sm-3">
+                                <address>
+                                    <strong>Phone Number:</strong><br />
+                                    +91-{{ phone_num }}<br />
+                                </address>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-9">
+                                <address>
+                                    <strong>Payment Method:</strong><br />
+                                    {{ method }}<br />
+                                </address>
+                            </div>
+                            <div class="col-md-3">
+                                <address>
+                                    <strong>Order Date & Time:</strong><br />
+                                    {{ order_date }} | {{ order_time }}
+                                </address>
+                            </div>
+                        </div>
+
+                        <div class="container summary">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h3 class="pl-3 pl-sm-0 text-center pt-3">ORDER SUMMARY</h3>
+                                    <table class="table">
+                                        <thead>
+                                            <tr class="line">
+                                                <td><strong>#</strong></td>
+                                                <td class="">
+                                                    <strong>ITEM</strong>
+                                                </td>
+                                                <td class="text-center">
+                                                    <strong>QTY</strong>
+                                                </td>
+                                                <td class="price-head text-center d-none d-lg-table-cell">
+                                                    <strong>PRICE</strong>
+                                                </td>
+                                                <td class="text-center d-none d-lg-table-cell">
+                                                    <strong>SUBTOTAL</strong>
+                                                </td>
+                                                <td class="text-center">
+                                                    <strong>SELLER</strong>
+                                                </td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for i in range(total_items) %}
+                                            <tr class="line">
+                                                <td>{{ i + 1 }}</td>
+                                                <td>
+                                                    <strong>{{ name[i] }}</strong>
+                                                </td>
+                                                <td class="text-center">{{ quantity[i] }}</td>
+                                                <td class="text-center d-none d-lg-table-cell">₹{{ price[i] }}</td>
+                                                <td class="text-center d-none d-lg-table-cell">
+                                                    ₹{{ price[i] * (quantity[i] | int) }}
+                                                </td>
+                                                <td class="text-center">{{ sellers[i] }} - <Strong>({{ seller_phone[i]
+                                                        }})</Strong></td>
+                                            </tr>
+                                            {% endfor %}
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td class="text-center">
+                                                    <strong>Taxes</strong>
+                                                </td>
+                                                <td class="text-center">
+                                                    <strong>₹30</strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td class="text-center">
+                                                    <strong>Total</strong>
+                                                </td>
+                                                <td class="text-center">
+                                                    <strong>₹{{ total_cost + 30 }}</strong>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <form method="POST" style="justify-content: center;align-items: center;display: flex;">
+                        <button class="btn btn-success py-2 mr-3">Checkout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-sm text-center">
+    <br>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="alert alert-dismissible fade show" role="alert" style="background-color:#5E8B7E; color:white;">
+        {% for message in messages %}
+        {{ message }}
+        {% endfor %}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+    {% endwith %}
+</div>
+
+<div class="all-page-title page-breadcrumb">
+    <div class="container text-center">
+        <div class="row pt-5">
+            <div class="col-lg-12">
+                <h1>Market</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End All Pages -->
+
+<!-- Start Menu -->
+<div class="menu-box">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="special-menu text-center">
+                    <div class="button-group filter-button-group">
+                        {% if category == "fruits" %}
+                        <button onclick="getFruits()" id="coffeeButton" class="active menu-btn">Fruits</button>
+                        {% else %}
+                        <button onclick="getFruits()" id="coffeeButton" class="menu-btn">Fruits</button>
+                        {% endif %}
+
+                        {% if category == "vegetables" %}
+                        <button onclick="getVegetables()" id="teaButton" class="active menu-btn">Vegetables</button>
+                        {% else %}
+                        <button onclick="getVegetables()" id="teaButton" class="menu-btn">Vegetables</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% set i = namespace(value=0) %}
+        {% set count = namespace(value=3) %}
+        {% for _ in range(number_of_rows) %}
+        <div class="row py-md-4 py-0">
+            {% for j in range(3) %}
+            {% set flag = namespace(value=0) %}
+            {% if i.value < total_items %} {% if i.value < count.value %} 
+            {% if all_items[i.value].quantity != '0' %}
+            <form
+                class="col-md-4 col-12 py-3 ml-2 ml-lg-0" method="POST">
+                <div class="card menu-item" style="width: 20rem">
+                    <img width="200px" class="card-img-top" src="{{ all_items[i.value].image_name }}"
+                        alt="Card image cap" />
+                    <h5 style="font-size: 26px" class="card-title pt-3 text-center">
+                        {{ all_items[i.value].name }}
+                        <h6 class="card-title pt-1 text-center">
+                            <strong>Posted By:</strong> {{ user_names[i.value] }}
+                        </h6>
+                        <ul class="list-group list-group-flush text-center">
+                            <li style="background-color: #5E8B7E; color: #fff; font-weight: 600;"
+                                class="list-group-item">
+                                ₹{{ all_items[i.value].price }}.00 / Kg
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Available Quantity:</strong> {{ all_items[i.value].quantity }} Kg
+                            </li>
+                            <li class="list-group-item">
+                                <select id="inputState{{ i.value }}" name="quantity"
+                                    class="form-control input-field custom-select">
+                                    {% for x in range(all_items[i.value].quantity|int) %}
+                                    <option class="default-text"
+                                        value="{{ all_items[i.value].item_id }} {{ loop.index }}">
+                                        {{ loop.index }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </li>
+                        </ul>
+                        <div class="card-body text-center">
+                            {% if cart_obj != None %}
+                            {% for item in cart_obj %}
+                            {% if item == all_items[i.value].item_id | string %}
+                            <a href="" class="btn order-btn menu-btn">
+                                Go to cart
+                            </a>
+                            {% set flag.value = 1 %}
+                            {% endif %}
+                            {% endfor %}
+                            {% endif %}
+                            {% if flag.value != 1 %}
+                            <button type="submit" class="btn order-btn">
+                                Add to cart
+                            </button>
+                            {% endif %}
+                            {% if current_user.is_authenticated %}
+                            <a onclick="direct_payment('{{ unique_id }}','{{ all_items[i.value].unique_id }}', '{{ all_items[i.value].item_id }}', '{{ i.value }}')"
+                                class="btn order-btn">
+                                Order Now
+                            </a>
+                            {% else %}
+                            <a href="{{ url_for('signup') }}" class="btn order-btn">
+                                Order Now
+                            </a>
+                            {% endif %}
+                        </div>
+                </div>
+                </form>
+                {% endif %}
+                {% set i.value = i.value + 1 %}
+                {% endif %}
+                {% endif %}
+                {% endfor %}
+                {% set count.value = i.value * 2 %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<!-- End Menu -->
+
+{% endblock %}
